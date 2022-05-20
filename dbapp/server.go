@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/blastrain/vitess-sqlparser/sqlparser"
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/mysql"
 	"github.com/go-mysql-org/go-mysql/server"
@@ -28,45 +29,41 @@ func (h *CustomMySQLHandler) UseDB(dbName string) error {
 }
 
 func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Result, error) {
-	//fmt.Println("query", query)
-	ss := strings.Split(query, " ")
-	switch strings.ToLower(ss[0]) {
-	case "select":
-		redisResult, redisGetErr := h.redisConn.Get(h.ctx, query).Bytes()
-		if redisGetErr == nil {
-			r := &mysql.Result{}
-			err := json.Unmarshal(redisResult, r)
-			if err != nil {
-				return nil, err
+	fmt.Println("query", query)
+	stmt, err := sqlparser.Parse(query)
+	if err != nil {
+		// Do something with the err
+		log.Warnln("sql parse fail", err)
+	}
+	switch stmt := stmt.(type) {
+	case *sqlparser.Select:
+		useCache := strings.TrimSpace(stmt.Cache) == "sql_cache"
+		if useCache {
+			redisResult, redisGetErr := h.redisConn.Get(h.ctx, query).Bytes()
+			if redisGetErr == nil {
+				r := &mysql.Result{}
+				err := json.Unmarshal(redisResult, r)
+				if err != nil {
+					return nil, err
+				}
+				return r, nil
 			}
-			return r, nil
 		}
-
 		dbResult, error := h.dbConn.Execute(query)
-		if len(dbResult.RowDatas) > 0 {
-			encoded, err := json.Marshal(dbResult)
+		if useCache {
+			if dbResult != nil && len(dbResult.RowDatas) > 0 {
+				encoded, err := json.Marshal(dbResult)
 
-			statusCmd := h.redisConn.Set(h.ctx, query, encoded, time.Second*60)
-			if statusCmd.Err() != nil {
-				fmt.Errorf("error:%v", err)
+				statusCmd := h.redisConn.Set(h.ctx, query, encoded, time.Second*60)
+				if statusCmd.Err() != nil {
+					fmt.Errorf("error:%v", err)
+				}
 			}
 		}
 		if error != nil {
 			return nil, errors.Trace(error)
 		}
 		return dbResult, nil
-	case "insert":
-		dbResult, error := h.dbConn.Execute(query)
-		if error != nil {
-			return nil, errors.Trace(error)
-		}
-		return dbResult, error
-	case "delete", "update", "replace":
-		dbResult, error := h.dbConn.Execute(query)
-		if error != nil {
-			return nil, errors.Trace(error)
-		}
-		return dbResult, error
 	default:
 		dbResult, error := h.dbConn.Execute(query)
 		if error != nil {
@@ -74,6 +71,7 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 		}
 		return dbResult, error
 	}
+	return nil, nil
 }
 
 func (h *CustomMySQLHandler) HandleQuery(query string) (*mysql.Result, error) {
@@ -134,7 +132,7 @@ func Start() {
 	mysqlAddress := "127.0.0.1:3306"
 	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
 
-	redisAddress := "localhost:6379"
+	redisAddress := "10.91.14.186:32239"
 	redisClient := redis.NewClient(&redis.Options{Addr: redisAddress, PoolSize: 48})
 
 	for {
