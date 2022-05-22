@@ -9,7 +9,9 @@ type DBAppConfig struct {
 	MySQLConnPoolMinALive int
 	MySQLConnPoolMaxAlive int
 	MySQLConnPoolMaxIdle  int
-	MySQLConnPoolAddress  string
+	MySQLAddress          string
+	MySQLUser             string
+	MySQLPassword         string
 
 	RedisAddress  string
 	RedisPoolSize int
