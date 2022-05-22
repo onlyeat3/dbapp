@@ -7,6 +7,7 @@ import (
 	"github.com/siddontang/go-log/log"
 	"golang.org/x/sync/errgroup"
 	"testing"
+	"time"
 )
 
 const (
@@ -15,29 +16,43 @@ const (
 	maxIdle  = 60
 )
 
-func BenchmarkProxy(b *testing.B) {
-	count := b.N
+func TestCompareDuration(t *testing.T) {
+	count := 100000
+	log.Infoln("start")
+	testProxy(count)
+
+	testDirectMySQL(count)
+}
+
+func testProxy(count int) {
 	mysqlAddress := fmt.Sprintf("127.0.0.1:%v", DefaultServerPort)
-	sql := "select * from trade limit 2"
+	sql := "select SQL_CACHE * from trade limit 2"
 	password := "dbapp"
 	user := "dbapp"
 	dbName := "test"
 	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
 
+	startTime := time.Now()
 	runSelect(count, connPool, sql)
+	endTime := time.Now()
+	duration := endTime.Sub(startTime)
+	log.Infoln("proxy耗时:", duration.Milliseconds())
 }
 
-//func BenchmarkMySQL(b *testing.B) {
-//	count := b.N
-//	mysqlAddress := "127.0.0.1:3306"
-//	sql := "select * from trade limit 2"
-//	password := "root"
-//	user := "root"
-//	dbName := "test"
-//	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
-//
-//	runSelect(count, connPool, sql)
-//}
+func testDirectMySQL(count int) {
+	mysqlAddress := "127.0.0.1:3306"
+	sql := "select * from trade limit 2"
+	password := "root"
+	user := "root"
+	dbName := "test"
+	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
+
+	startTime := time.Now()
+	runSelect(count, connPool, sql)
+	endTime := time.Now()
+	duration := endTime.Sub(startTime)
+	log.Infoln("直接MySQL耗时:", duration.Milliseconds())
+}
 
 func runSelect(count int, connPool *client.Pool, sql string) {
 	ctx := context.Background()

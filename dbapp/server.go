@@ -79,25 +79,25 @@ func Start(config *DBAppConfig) {
 			continue
 		}
 
-		ctx := context.WithValue(context.Background(), "id", id)
-		handler := &CustomMySQLHandler{ctx: ctx, connPool: connPool, redisClient: redisClient}
-
-		log.Infof("id:[%v],%v\n", id, 4)
-		serverConn, err := server.NewConn(c, config.ServerUser, config.ServerPassword, handler)
-		log.Infof("id:[%v],%v\n", id, 5)
-
-		if err != nil {
-			log.Infof("id:[%v],%v\n", id, 6)
-			log.Errorln(err)
-			return
-		}
-		log.Infof("id:[%v],%v\n", id, 7)
-
-		conns = append(conns, serverConn)
-		log.Infof("id:[%v],%v\n", id, 8)
-
 		go func() {
+
+			ctx := context.WithValue(context.Background(), "id", id)
+			handler := &CustomMySQLHandler{ctx: ctx, connPool: connPool, redisClient: redisClient}
+
+			log.Infof("id:[%v],%v\n", id, 4)
+			serverConn, err := server.NewConn(c, config.ServerUser, config.ServerPassword, handler)
+			log.Infof("id:[%v],%v\n", id, 5)
+
+			if err != nil {
+				log.Infof("id:[%v],%v\n", id, 6)
+				log.Errorln(err)
+				return
+			}
+			log.Infof("id:[%v],%v\n", id, 7)
+
+			conns = append(conns, serverConn)
 			for {
+				log.Infof("id:[%v],%v\n", id, 8)
 				err := serverConn.HandleCommand()
 				log.Infof("id:[%v],%v\n", id, 9)
 				if err != nil {
