@@ -48,7 +48,7 @@ func Start(config *DBAppConfig) {
 	//				aliveConnCount++
 	//			}
 	//		}
-	//		log.Infof("Current Connection count:%v,aliveConnCount:%v", len(conns), aliveConnCount)
+	//		//log.Infof("Current Connection count:%v,aliveConnCount:%v", len(conns), aliveConnCount)
 	//	}
 	//}()
 	// Create a new Node with a Node number of 1
@@ -66,16 +66,16 @@ func Start(config *DBAppConfig) {
 	}
 
 	redisClient := redis.NewClient(&redis.Options{Addr: config.RedisAddress, PoolSize: config.RedisPoolSize})
-	connPool := client.NewPool(log.Debugf, config.MySQLConnPoolMinALive, config.MySQLConnPoolMaxAlive, config.MySQLConnPoolMaxIdle, config.MySQLAddress, config.MySQLUser, config.MySQLPassword, "")
+	connPool := client.NewPool(log.Debugf, config.MySQLConnPoolMinALive, config.MySQLConnPoolMaxAlive, config.MySQLConnPoolMaxIdle, config.MySQLAddress, config.MySQLUser, config.MySQLPassword, config.ServerDBName)
 	for {
 		id := node.Generate().String()
-		log.Infof("id:[%v],%v\n", id, 1)
+		//log.Infof("id:[%v],%v\n", id, 1)
 		c, netAcceptError := l.Accept()
-		log.Infof("id:[%v],%v\n", id, 2)
+		//log.Infof("id:[%v],%v\n", id, 2)
 
 		if netAcceptError != nil {
 			log.Errorf("accept net connection fail.%v", netAcceptError)
-			log.Infof("id:[%v],%v\n", id, 3)
+			//log.Infof("id:[%v],%v\n", id, 3)
 			continue
 		}
 
@@ -84,29 +84,29 @@ func Start(config *DBAppConfig) {
 			ctx := context.WithValue(context.Background(), "id", id)
 			handler := &CustomMySQLHandler{ctx: ctx, connPool: connPool, redisClient: redisClient}
 
-			log.Infof("id:[%v],%v\n", id, 4)
+			//log.Infof("id:[%v],%v\n", id, 4)
 			serverConn, err := server.NewConn(c, config.ServerUser, config.ServerPassword, handler)
-			log.Infof("id:[%v],%v\n", id, 5)
+			//log.Infof("id:[%v],%v\n", id, 5)
 
 			if err != nil {
-				log.Infof("id:[%v],%v\n", id, 6)
+				//log.Infof("id:[%v],%v\n", id, 6)
 				log.Errorln(err)
 				return
 			}
-			log.Infof("id:[%v],%v\n", id, 7)
+			//log.Infof("id:[%v],%v\n", id, 7)
 
 			conns = append(conns, serverConn)
 			for {
-				log.Infof("id:[%v],%v\n", id, 8)
+				//log.Infof("id:[%v],%v\n", id, 8)
 				err := serverConn.HandleCommand()
-				log.Infof("id:[%v],%v\n", id, 9)
+				//log.Infof("id:[%v],%v\n", id, 9)
 				if err != nil {
 					// log.Errorf("handle serverConn error,closed:%v,%v", serverConn.Closed(), err)
 				}
 				if serverConn.Closed() {
 					break
 				}
-				log.Infof("id:[%v],%v\n", id, 10)
+				//log.Infof("id:[%v],%v\n", id, 10)
 			}
 		}()
 	}

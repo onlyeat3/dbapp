@@ -18,17 +18,17 @@ func main() {
 	}()
 	config := &dbapp.DBAppConfig{
 		ServerPort:            DefaultServerPort,
-		ServerDBName:          "",
+		ServerDBName:          "test",
 		ServerUser:            "dbapp",
 		ServerPassword:        "dbapp",
 		MySQLConnPoolMinALive: 10,
-		MySQLConnPoolMaxAlive: 100,
-		MySQLConnPoolMaxIdle:  120,
+		MySQLConnPoolMaxAlive: 10000,
+		MySQLConnPoolMaxIdle:  10,
 		MySQLAddress:          "127.0.0.1:3306",
 		MySQLUser:             "root",
 		MySQLPassword:         "root",
 		RedisAddress:          "127.0.0.1:6379",
-		RedisPoolSize:         1000,
+		RedisPoolSize:         10000,
 	}
 	dbapp.Start(config)
 }

@@ -2,13 +2,13 @@ package dbapp
 
 import (
 	"context"
+	"dbapp/performance"
 	"encoding/json"
 	"fmt"
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/mysql"
 	"github.com/go-redis/redis/v8"
 	"github.com/siddontang/go-log/log"
-	"github.com/xwb1989/sqlparser"
 	"strings"
 	"time"
 )
@@ -21,29 +21,21 @@ type CustomMySQLHandler struct {
 }
 
 func (h CustomMySQLHandler) GetDBConn() (*client.Conn, error) {
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 1)
 	conn, err := h.connPool.GetConn(h.ctx)
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 2)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 3)
-	if h.dbName != "" {
+	if h.dbName != "" && conn.GetDB() != h.dbName {
 		err := conn.UseDB(h.dbName)
-		log.Infof("id:%v,handler%v", h.ctx.Value("id"), 4)
 		if err != nil {
-			log.Infof("id:%v,handler%v", h.ctx.Value("id"), 5)
 			return nil, err
 		}
 	}
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 6)
 	return conn, err
 }
 
 func (h CustomMySQLHandler) ReturnDBConn(conn *client.Conn) {
-	conn.UseDB("")
 	h.connPool.PutConn(conn)
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 12)
 }
 
 func (h CustomMySQLHandler) GetRedisConn() *redis.Conn {
@@ -57,7 +49,7 @@ func (h *CustomMySQLHandler) UseDB(dbName string) error {
 	}
 	defer h.ReturnDBConn(conn)
 	err = conn.UseDB(dbName)
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 11)
+	//log.Infof("id:%v,handler%v", h.ctx.Value("id"), 11)
 	if err == nil {
 		h.dbName = dbName
 	}
@@ -66,20 +58,18 @@ func (h *CustomMySQLHandler) UseDB(dbName string) error {
 
 func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Result, error) {
 	//log.Infoln("sql", query)
-	stmt, err := sqlparser.Parse(query)
-	if err != nil {
-		// Do something with the err
-		log.Warnln("sql parse fail", err)
-	}
-	dbConn, err := h.GetDBConn()
-	if err != nil {
-		return nil, err
-	}
-	defer h.ReturnDBConn(dbConn)
-	log.Infof("id:%v,handler%v", h.ctx.Value("id"), 7)
-	switch stmt := stmt.(type) {
-	case *sqlparser.Select:
-		useCache := strings.ToLower(strings.TrimSpace(stmt.Cache)) == "sql_cache"
+	//stmt, err := sqlparser.Parse(query)
+	//if err != nil {
+	//	Do something with the err
+	//log.Warnln("sql parse fail", err)
+	//}
+	//log.Infof("id:%v,handler%v", h.ctx.Value("id"), 7)
+	ss := strings.Split(query, " ")
+	switch strings.ToLower(ss[0]) {
+	case "select":
+		monitor := performance.StartNewMonitor()
+		useCache := strings.Contains(strings.ToLower(strings.TrimSpace(query)), "sql_cache")
+		//useCache := strings.ToLower(strings.TrimSpace(query)) == "sql_cache"
 		isRedisValid := true
 		if useCache {
 			exists, _ := h.redisClient.Exists(h.ctx, query).Result()
@@ -95,11 +85,18 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 					if err != nil {
 						log.Errorln(err)
 					} else {
+						monitor.End()
 						return r, nil
 					}
 				}
 			}
 		}
+
+		dbConn, err := h.GetDBConn()
+		if err != nil {
+			return nil, err
+		}
+		defer h.ReturnDBConn(dbConn)
 		dbResult, error := dbConn.Execute(query)
 		if useCache && isRedisValid {
 			if dbResult != nil && len(dbResult.RowDatas) > 0 {
@@ -112,13 +109,21 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 				}
 			}
 		}
-		log.Infof("id:%v,handler%v", h.ctx.Value("id"), 8)
+		//log.Infof("id:%v,handler%v", h.ctx.Value("id"), 8)
+
 		return dbResult, error
 	default:
+		dbConn, err := h.GetDBConn()
+		if err != nil {
+			return nil, err
+		}
+		defer h.ReturnDBConn(dbConn)
 		dbResult, error := dbConn.Execute(query)
-		log.Infof("id:%v,handler%v", h.ctx.Value("id"), 9)
+		//log.Infof("id:%v,handler%v", h.ctx.Value("id"), 9)
 		return dbResult, error
 	}
+
+	return nil, nil
 }
 
 func (h *CustomMySQLHandler) HandleQuery(query string) (*mysql.Result, error) {

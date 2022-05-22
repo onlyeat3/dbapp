@@ -12,7 +12,7 @@ import (
 
 const (
 	minALive = 10
-	maxAlive = 1000
+	maxAlive = 100
 	maxIdle  = 60
 )
 
