@@ -6,6 +6,7 @@ import (
 )
 
 type Monitor struct {
+	Name      string
 	BeginTime time.Time
 }
 
@@ -16,9 +17,9 @@ func (h Monitor) Start() Monitor {
 
 func (h Monitor) End() {
 	duration := time.Now().Sub(h.BeginTime).Nanoseconds()
-	log.Infof("duration nanos:%v", duration)
+	log.Infof("[%v]duration nanos:%v", h.Name, duration)
 }
 
-func StartNewMonitor() *Monitor {
-	return &Monitor{BeginTime: time.Now()}
+func StartNewMonitor(name string) *Monitor {
+	return &Monitor{BeginTime: time.Now(), Name: name}
 }

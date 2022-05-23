@@ -67,27 +67,23 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 	ss := strings.Split(query, " ")
 	switch strings.ToLower(ss[0]) {
 	case "select":
-		monitor := performance.StartNewMonitor()
+		monitor := performance.StartNewMonitor("redis get")
 		useCache := strings.Contains(strings.ToLower(strings.TrimSpace(query)), "sql_cache")
 		//useCache := strings.ToLower(strings.TrimSpace(query)) == "sql_cache"
 		isRedisValid := true
 		if useCache {
-			exists, _ := h.redisClient.Exists(h.ctx, query).Result()
-
-			if exists == 1 {
-				redisResult, redisGetErr := h.redisClient.Get(h.ctx, query).Bytes()
-				if redisGetErr != nil {
-					log.Errorln(redisGetErr)
-					isRedisValid = false
+			redisResult, redisGetErr := h.redisClient.Get(h.ctx, query).Bytes()
+			if redisGetErr != nil && redisGetErr.Error() != "redis: nil" {
+				log.Errorln(redisGetErr)
+				isRedisValid = false
+			} else {
+				r := &mysql.Result{}
+				err := json.Unmarshal(redisResult, r)
+				if err != nil {
+					log.Errorln(err)
 				} else {
-					r := &mysql.Result{}
-					err := json.Unmarshal(redisResult, r)
-					if err != nil {
-						log.Errorln(err)
-					} else {
-						monitor.End()
-						return r, nil
-					}
+					monitor.End()
+					return r, nil
 				}
 			}
 		}
