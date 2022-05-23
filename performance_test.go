@@ -26,7 +26,7 @@ func TestCompareDuration(t *testing.T) {
 
 func testProxy(count int) {
 	mysqlAddress := fmt.Sprintf("127.0.0.1:%v", DefaultServerPort)
-	sql := "select * from trade limit 2"
+	sql := "select SQL_CACHE * from trade limit 2"
 	password := "dbapp"
 	user := "dbapp"
 	dbName := "test"
