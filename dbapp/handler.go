@@ -1,9 +1,9 @@
 package dbapp
 
 import (
+	"bytes"
 	"context"
-	"dbapp/performance"
-	"encoding/json"
+	"encoding/gob"
 	"fmt"
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/mysql"
@@ -62,20 +62,18 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 	ss := strings.Split(query, " ")
 	switch strings.ToLower(ss[0]) {
 	case "select":
-		monitor := performance.StartNewMonitor("redis get")
 		useCache := strings.Contains(strings.ToLower(strings.TrimSpace(query)), "sql_cache")
-		//useCache := strings.ToLower(strings.TrimSpace(query)) == "sql_cache"
 		isRedisValid := true
 		if useCache {
 			redisResult, redisGetErr := h.redisClient.Get(h.ctx, query).Bytes()
-			monitor.End()
 			if redisGetErr != nil && redisGetErr.Error() != "redis: nil" {
 				log.Errorln(redisGetErr)
 				isRedisValid = false
 			} else {
 				if redisResult != nil {
 					r := &mysql.Result{}
-					err := json.Unmarshal(redisResult, r)
+					decoder := gob.NewDecoder(bytes.NewReader(redisResult))
+					err := decoder.Decode(r)
 					if err != nil {
 						log.Errorln(err)
 					} else {
@@ -93,11 +91,16 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 		dbResult, error := dbConn.Execute(query)
 		if useCache && isRedisValid {
 			if dbResult != nil && len(dbResult.RowDatas) > 0 {
-				encoded, err := json.Marshal(dbResult)
+				var buff bytes.Buffer
+				encoder := gob.NewEncoder(&buff)
+				err := encoder.Encode(dbResult)
+				if err != nil {
+					log.Errorf("encode fail", err)
+				}
 
-				statusCmd := h.redisClient.Set(h.ctx, query, encoded, time.Second*60)
+				statusCmd := h.redisClient.Set(h.ctx, query, buff.Bytes(), time.Second*60)
 				if statusCmd.Err() != nil {
-					fmt.Errorf("error:%v", err)
+					log.Errorf("error:%v", err)
 					return nil, err
 				}
 			}

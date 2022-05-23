@@ -48,3 +48,12 @@ func NewGenericRedisClient(config *DBAppConfig) *GenericRedisClient {
 		}
 	}
 }
+
+func NewGenericRedisClientWithConfig(address string, poolSize int, password string) *GenericRedisClient {
+	config := &DBAppConfig{
+		RedisAddress:  address,
+		RedisPoolSize: poolSize,
+		RedisPassword: password,
+	}
+	return NewGenericRedisClient(config)
+}

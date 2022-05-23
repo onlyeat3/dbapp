@@ -20,17 +20,17 @@ const (
 
 func TestCompareDuration(t *testing.T) {
 	count := 10000
+	sql := "select SQL_CACHE * from article limit 10000,2"
+
 	log.Infoln("start")
-	testProxy(count)
 
-	testDirectMySQL(count)
-
-	testDirectRedis(count)
+	testProxy(count, sql)
+	testDirectRedis(count, sql)
+	testDirectMySQL(count, sql)
 }
 
-func testProxy(count int) {
+func testProxy(count int, sql string) {
 	mysqlAddress := fmt.Sprintf("127.0.0.1:%v", DefaultServerPort)
-	sql := "select SQL_CACHE * from article limit 10000,2"
 	password := "dbapp"
 	user := "dbapp"
 	dbName := "test"
@@ -41,9 +41,8 @@ func testProxy(count int) {
 	monitor.End()
 }
 
-func testDirectMySQL(count int) {
+func testDirectMySQL(count int, sql string) {
 	mysqlAddress := "127.0.0.1:3306"
-	sql := "select SQL_CACHE * from article limit 10000,2"
 	password := "root"
 	user := "root"
 	dbName := "test"
@@ -54,24 +53,14 @@ func testDirectMySQL(count int) {
 	monitor.End()
 }
 
-func testDirectRedis(count int) {
-	sql := "select SQL_CACHE * from article limit 10000,2"
-	config := &dbapp.DBAppConfig{
-		ServerPort:            DefaultServerPort,
-		ServerDBName:          "test",
-		ServerUser:            "dbapp",
-		ServerPassword:        "dbapp",
-		MySQLConnPoolMinALive: 10,
-		MySQLConnPoolMaxAlive: 10000,
-		MySQLConnPoolMaxIdle:  10,
-		MySQLAddress:          "127.0.0.1:3306",
-		MySQLUser:             "root",
-		MySQLPassword:         "root",
-		RedisAddress:          "127.0.0.1:6379",
-		RedisPoolSize:         10000,
-		RedisPassword:         "",
-	}
-	redisClient := dbapp.NewGenericRedisClient(config)
+const (
+	RedisAddress  = "127.0.0.1:6379"
+	RedisPoolSize = 10000
+	RedisPassword = ""
+)
+
+func testDirectRedis(count int, sql string) {
+	redisClient := dbapp.NewGenericRedisClientWithConfig(RedisAddress, RedisPoolSize, RedisPassword)
 	monitor := performance.StartNewMonitorWithTimeUnit("direct Redis", time.Millisecond)
 	ctx := context.Background()
 	g, _ := errgroup.WithContext(ctx)
