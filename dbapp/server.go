@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/server"
-	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/siddontang/go-log/log"
 )
@@ -65,7 +64,7 @@ func Start(config *DBAppConfig) {
 		return
 	}
 
-	redisClient := redis.NewClient(&redis.Options{Addr: config.RedisAddress, PoolSize: config.RedisPoolSize})
+	redisClient := NewGenericRedisClient(config)
 	connPool := client.NewPool(log.Debugf, config.MySQLConnPoolMinALive, config.MySQLConnPoolMaxAlive, config.MySQLConnPoolMaxIdle, config.MySQLAddress, config.MySQLUser, config.MySQLPassword, config.ServerDBName)
 	for {
 		id := node.Generate().String()
@@ -80,7 +79,6 @@ func Start(config *DBAppConfig) {
 		}
 
 		go func() {
-
 			ctx := context.WithValue(context.Background(), "id", id)
 			handler := &CustomMySQLHandler{ctx: ctx, connPool: connPool, redisClient: redisClient}
 
@@ -110,9 +108,4 @@ func Start(config *DBAppConfig) {
 			}
 		}()
 	}
-
-}
-
-func logN(i int) {
-
 }

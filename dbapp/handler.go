@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/mysql"
-	"github.com/go-redis/redis/v8"
 	"github.com/siddontang/go-log/log"
 	"strings"
 	"time"
@@ -16,7 +15,7 @@ import (
 type CustomMySQLHandler struct {
 	ctx         context.Context
 	connPool    *client.Pool
-	redisClient *redis.Client
+	redisClient *GenericRedisClient
 	dbName      string
 }
 
@@ -36,10 +35,6 @@ func (h CustomMySQLHandler) GetDBConn() (*client.Conn, error) {
 
 func (h CustomMySQLHandler) ReturnDBConn(conn *client.Conn) {
 	h.connPool.PutConn(conn)
-}
-
-func (h CustomMySQLHandler) GetRedisConn() *redis.Conn {
-	return h.redisClient.Conn(h.ctx)
 }
 
 func (h *CustomMySQLHandler) UseDB(dbName string) error {
@@ -73,17 +68,19 @@ func (h *CustomMySQLHandler) handleQuery(query string, binary bool) (*mysql.Resu
 		isRedisValid := true
 		if useCache {
 			redisResult, redisGetErr := h.redisClient.Get(h.ctx, query).Bytes()
+			monitor.End()
 			if redisGetErr != nil && redisGetErr.Error() != "redis: nil" {
 				log.Errorln(redisGetErr)
 				isRedisValid = false
 			} else {
-				r := &mysql.Result{}
-				err := json.Unmarshal(redisResult, r)
-				if err != nil {
-					log.Errorln(err)
-				} else {
-					monitor.End()
-					return r, nil
+				if redisResult != nil {
+					r := &mysql.Result{}
+					err := json.Unmarshal(redisResult, r)
+					if err != nil {
+						log.Errorln(err)
+					} else {
+						return r, nil
+					}
 				}
 			}
 		}

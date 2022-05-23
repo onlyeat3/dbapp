@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"dbapp/dbapp"
+	"dbapp/performance"
 	"fmt"
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/siddontang/go-log/log"
@@ -22,36 +24,72 @@ func TestCompareDuration(t *testing.T) {
 	testProxy(count)
 
 	testDirectMySQL(count)
+
+	testDirectRedis(count)
 }
 
 func testProxy(count int) {
 	mysqlAddress := fmt.Sprintf("127.0.0.1:%v", DefaultServerPort)
-	sql := "select SQL_CACHE * from trade limit 2"
+	sql := "select SQL_CACHE * from article limit 10000,2"
 	password := "dbapp"
 	user := "dbapp"
 	dbName := "test"
 	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
 
-	startTime := time.Now()
+	monitor := performance.StartNewMonitorWithTimeUnit("proxy", time.Millisecond)
 	runSelect(count, connPool, sql)
-	endTime := time.Now()
-	duration := endTime.Sub(startTime)
-	log.Infoln("proxy耗时:", duration.Milliseconds())
+	monitor.End()
 }
 
 func testDirectMySQL(count int) {
 	mysqlAddress := "127.0.0.1:3306"
-	sql := "select * from trade limit 2"
+	sql := "select SQL_CACHE * from article limit 10000,2"
 	password := "root"
 	user := "root"
 	dbName := "test"
 	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
 
-	startTime := time.Now()
+	monitor := performance.StartNewMonitorWithTimeUnit("MySQL", time.Millisecond)
 	runSelect(count, connPool, sql)
-	endTime := time.Now()
-	duration := endTime.Sub(startTime)
-	log.Infoln("直接MySQL耗时:", duration.Milliseconds())
+	monitor.End()
+}
+
+func testDirectRedis(count int) {
+	sql := "select SQL_CACHE * from article limit 10000,2"
+	config := &dbapp.DBAppConfig{
+		ServerPort:            DefaultServerPort,
+		ServerDBName:          "test",
+		ServerUser:            "dbapp",
+		ServerPassword:        "dbapp",
+		MySQLConnPoolMinALive: 10,
+		MySQLConnPoolMaxAlive: 10000,
+		MySQLConnPoolMaxIdle:  10,
+		MySQLAddress:          "127.0.0.1:3306",
+		MySQLUser:             "root",
+		MySQLPassword:         "root",
+		RedisAddress:          "127.0.0.1:6379",
+		RedisPoolSize:         10000,
+		RedisPassword:         "",
+	}
+	redisClient := dbapp.NewGenericRedisClient(config)
+	monitor := performance.StartNewMonitorWithTimeUnit("direct Redis", time.Millisecond)
+	ctx := context.Background()
+	g, _ := errgroup.WithContext(ctx)
+
+	for i := 0; i < count; i++ {
+		g.Go(func() error {
+			_, err := redisClient.Get(ctx, sql).Bytes()
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+	}
+	err := g.Wait()
+	if err != nil {
+		fmt.Println(err)
+	}
+	monitor.End()
 }
 
 func runSelect(count int, connPool *client.Pool, sql string) {

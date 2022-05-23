@@ -13,6 +13,8 @@ type DBAppConfig struct {
 	MySQLUser             string
 	MySQLPassword         string
 
-	RedisAddress  string
-	RedisPoolSize int
+	RedisAddresses []string
+	RedisAddress   string
+	RedisPoolSize  int
+	RedisPassword  string
 }
