@@ -65,7 +65,6 @@ func Start(config *DBAppConfig) {
 	}
 
 	redisClient := NewGenericRedisClient(config)
-	connPool := client.NewPool(log.Debugf, config.MySQLConnPoolMinALive, config.MySQLConnPoolMaxAlive, config.MySQLConnPoolMaxIdle, config.MySQLAddress, config.MySQLUser, config.MySQLPassword, config.ServerDBName)
 	for {
 		id := node.Generate().String()
 		//log.Infof("id:[%v],%v\n", id, 1)
@@ -80,7 +79,14 @@ func Start(config *DBAppConfig) {
 
 		go func() {
 			ctx := context.WithValue(context.Background(), "id", id)
-			handler := &CustomMySQLHandler{ctx: ctx, connPool: connPool, redisClient: redisClient}
+			conn, err := client.Connect(config.MySQLAddress, config.MySQLUser, config.MySQLPassword, config.ServerDBName)
+			if err != nil {
+				return
+			}
+			defer func(conn *client.Conn) {
+				_ = conn.Close()
+			}(conn)
+			handler := &CustomMySQLHandler{ctx: ctx, conn: conn, redisClient: redisClient}
 
 			//log.Infof("id:[%v],%v\n", id, 4)
 			serverConn, err := server.NewConn(c, config.ServerUser, config.ServerPassword, handler)

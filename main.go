@@ -28,7 +28,7 @@ func main() {
 		MySQLUser:             "root",
 		MySQLPassword:         "root",
 		RedisAddress:          "127.0.0.1:6379",
-		RedisPoolSize:         10000,
+		RedisPoolSize:         1000,
 		RedisPassword:         "",
 	}
 	dbapp.Start(config)
