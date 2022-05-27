@@ -6,7 +6,7 @@ import (
 	"dbapp/performance"
 	"fmt"
 	"github.com/go-mysql-org/go-mysql/client"
-	"github.com/siddontang/go-log/log"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 	"testing"
 	"time"

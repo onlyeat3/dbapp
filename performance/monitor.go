@@ -1,7 +1,7 @@
 package performance
 
 import (
-	"github.com/siddontang/go-log/log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 

@@ -11,7 +11,7 @@ import (
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/server"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/siddontang/go-log/log"
+	log "github.com/sirupsen/logrus"
 )
 
 type DBAppProvider struct {
@@ -63,6 +63,7 @@ func Start(config *DBAppConfig) {
 		log.Errorln(err)
 		return
 	}
+	log.Infof("Listening in %v", address)
 
 	redisClient := NewGenericRedisClient(config)
 	for {

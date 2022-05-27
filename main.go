@@ -3,16 +3,31 @@ package main
 import (
 	"dbapp/dbapp"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
 )
 
 const (
 	DefaultServerPort = 4001
 )
 
+func initLogger() {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.TextFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	log.SetOutput(os.Stdout)
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.InfoLevel)
+}
+
 func main() {
+
+	initLogger()
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()

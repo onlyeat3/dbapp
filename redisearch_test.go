@@ -4,7 +4,7 @@ package main
 //import (
 //	"fmt"
 //	"github.com/RediSearch/redisearch-go/redisearch"
-//	"github.com/siddontang/go-log/log"
+//	log "github.com/sirupsen/logrus"
 //	"testing"
 //	"time"
 //)
