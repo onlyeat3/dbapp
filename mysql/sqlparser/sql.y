@@ -17,15 +17,15 @@ limitations under the License.
 %{
 package sqlparser
 
-func setParseTree(yylex interface{}, stmt Statement) {
+func SetParseTree(yylex interface{}, stmt Statement) {
   yylex.(*Tokenizer).ParseTree = stmt
 }
 
-func setAllowComments(yylex interface{}, allow bool) {
+func SetAllowComments(yylex interface{}, allow bool) {
   yylex.(*Tokenizer).AllowComments = allow
 }
 
-func incNesting(yylex interface{}) bool {
+func IncNesting(yylex interface{}) bool {
   yylex.(*Tokenizer).nesting++
   if yylex.(*Tokenizer).nesting == 200 {
     return true
@@ -33,11 +33,11 @@ func incNesting(yylex interface{}) bool {
   return false
 }
 
-func decNesting(yylex interface{}) {
+func DecNesting(yylex interface{}) {
   yylex.(*Tokenizer).nesting--
 }
 
-func forceEOF(yylex interface{}) {
+func ForceEOF(yylex interface{}) {
   yylex.(*Tokenizer).ForceEOF = true
 }
 
@@ -214,7 +214,7 @@ func forceEOF(yylex interface{}) {
 any_command:
   command semicolon_opt
   {
-    setParseTree(yylex, $1)
+    SetParseTree(yylex, $1)
   }
 
 semicolon_opt:
@@ -487,12 +487,12 @@ other_statement:
 
 comment_opt:
   {
-    setAllowComments(yylex, true)
+    SetAllowComments(yylex, true)
   }
   comment_list
   {
     $$ = $2
-    setAllowComments(yylex, false)
+    SetAllowComments(yylex, false)
   }
 
 comment_list:
@@ -1841,7 +1841,7 @@ non_reserved_keyword:
 openb:
   '('
   {
-    if incNesting(yylex) {
+    if IncNesting(yylex) {
       yylex.Error("max nesting level reached")
       return 1
     }
@@ -1850,23 +1850,23 @@ openb:
 closeb:
   ')'
   {
-    decNesting(yylex)
+    DecNesting(yylex)
   }
 
 force_eof:
 {
-  forceEOF(yylex)
+  ForceEOF(yylex)
 }
 
 ddl_force_eof:
   {
-    forceEOF(yylex)
+    ForceEOF(yylex)
   }
 | openb
   {
-    forceEOF(yylex)
+    ForceEOF(yylex)
   }
 | reserved_sql_id
   {
-    forceEOF(yylex)
+    ForceEOF(yylex)
   }
