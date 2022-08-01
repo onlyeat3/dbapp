@@ -1,4 +1,4 @@
-module dbapp
+module virtdb
 
 go 1.18
 

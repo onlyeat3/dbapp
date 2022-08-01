@@ -13,7 +13,7 @@
 
 package ast
 
-import "dbapp/tidbparser/dependency/types"
+import "virtdb/tidbparser/dependency/types"
 
 // node is the struct implements node interface except for Accept method.
 // Node implementations should embed it in.

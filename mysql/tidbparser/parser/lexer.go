@@ -20,7 +20,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"dbapp/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/mysql"
 )
 
 var _ = yyLexer(&Scanner{})

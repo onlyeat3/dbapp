@@ -21,10 +21,11 @@ import (
 	"io"
 	"strings"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
-	"dbapp/tidbparser/dependency/util/charset"
-	"dbapp/tidbparser/parser/opcode"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/util/charset"
+	"virtdb/tidbparser/parser/opcode"
+
 	"github.com/juju/errors"
 )
 

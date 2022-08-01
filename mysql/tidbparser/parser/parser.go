@@ -32,13 +32,13 @@ import __yyfmt__ "fmt"
 import (
 	"strings"
 
-	"dbapp/tidbparser/ast"
-	"dbapp/tidbparser/dependency/model"
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/util/auth"
-	"dbapp/tidbparser/dependency/util/charset"
-	"dbapp/tidbparser/parser/opcode"
+	"virtdb/tidbparser/ast"
+	"virtdb/tidbparser/dependency/model"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/util/auth"
+	"virtdb/tidbparser/dependency/util/charset"
+	"virtdb/tidbparser/parser/opcode"
 )
 
 type yySymType struct {

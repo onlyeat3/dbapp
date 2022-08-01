@@ -1,12 +1,13 @@
-package dbapp
+package virtdb
 
 import (
 	"context"
 	"fmt"
-	"github.com/bwmarrin/snowflake"
 	"net"
 	"sync"
 	"time"
+
+	"github.com/bwmarrin/snowflake"
 
 	"github.com/go-mysql-org/go-mysql/client"
 	"github.com/go-mysql-org/go-mysql/server"
@@ -14,29 +15,29 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type DBAppProvider struct {
+type VirtdbProvider struct {
 	userPool sync.Map // username -> password
 	username string
 	password string
 }
 
-func (m *DBAppProvider) CheckUsername(username string) (found bool, err error) {
+func (m *VirtdbProvider) CheckUsername(username string) (found bool, err error) {
 	time.Sleep(time.Millisecond * time.Duration(50))
 	m.username = username
 	return true, nil
 }
 
-func (m *DBAppProvider) GetCredential(username string) (password string, found bool, err error) {
+func (m *VirtdbProvider) GetCredential(username string) (password string, found bool, err error) {
 	time.Sleep(time.Millisecond * time.Duration(50))
 	m.password = password
 	return password, true, nil
 }
 
-func (m *DBAppProvider) AddUser(username, password string) {
+func (m *VirtdbProvider) AddUser(username, password string) {
 	m.userPool.Store(username, password)
 }
 
-func Start(config *DBAppConfig) {
+func Start(config *VirtdbConfig) {
 	conns := make([]*server.Conn, 0)
 	//go func() {
 	//	for {

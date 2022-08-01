@@ -25,8 +25,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"dbapp/tidbparser/dependency/terror"
-	"dbapp/tidbparser/dependency/util/hack"
+	"virtdb/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/util/hack"
+
 	"github.com/juju/errors"
 )
 

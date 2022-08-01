@@ -13,7 +13,7 @@
 
 package ast
 
-import "dbapp/tidbparser/dependency/model"
+import "virtdb/tidbparser/dependency/model"
 
 var (
 	_ StmtNode = &AnalyzeTableStmt{}

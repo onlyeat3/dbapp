@@ -17,8 +17,8 @@ import (
 	"strings"
 	"time"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/types"
 )
 
 // SchemaState is the state for schema elements.

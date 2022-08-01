@@ -14,9 +14,9 @@
 package ast
 
 import (
-	"dbapp/tidbparser/dependency/model"
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/util/auth"
+	"virtdb/tidbparser/dependency/model"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/util/auth"
 )
 
 var (

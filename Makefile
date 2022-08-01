@@ -9,7 +9,7 @@ goyacc:
 	${GOPATH}/bin/goyacc -o ./sqlparser/sql.go ./sqlparser/sql.y
 	gofmt -w ./sqlparser/sql.go
 build_app:
-	go build -mod=mod -ldflags "-X \"main.BuildVersion=${COMMIT_HASH}\" -X \"main.BuildDate=$(BUILD_DATE)\"" -o ./bin/dbapp ./
+	go build -mod=mod -ldflags "-X \"main.BuildVersion=${COMMIT_HASH}\" -X \"main.BuildDate=$(BUILD_DATE)\"" -o ./bin/virtdb ./
 clean:
 	@rm -rf bin
 test:

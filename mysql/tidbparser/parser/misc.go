@@ -16,8 +16,8 @@ package parser
 import (
 	"strings"
 
-	"dbapp/tidbparser/dependency/util/charset"
-	"dbapp/tidbparser/dependency/util/hack"
+	"virtdb/tidbparser/dependency/util/charset"
+	"virtdb/tidbparser/dependency/util/hack"
 )
 
 func isLetter(ch rune) bool {

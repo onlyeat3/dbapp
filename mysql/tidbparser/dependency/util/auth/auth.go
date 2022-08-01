@@ -19,7 +19,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"dbapp/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/terror"
+
 	"github.com/juju/errors"
 )
 

@@ -1,4 +1,4 @@
-package dbapp
+package virtdb
 
 import (
 	"bytes"

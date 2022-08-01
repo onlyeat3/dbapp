@@ -16,7 +16,8 @@ package codec
 import (
 	"fmt"
 
-	"dbapp/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/types"
+
 	"github.com/juju/errors"
 )
 

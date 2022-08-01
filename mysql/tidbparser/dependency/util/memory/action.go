@@ -16,8 +16,8 @@ package memory
 import (
 	"sync"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
 )
 
 // ActionOnExceed is the action taken when memory usage exceeds memory quota.

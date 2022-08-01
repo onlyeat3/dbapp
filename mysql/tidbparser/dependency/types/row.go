@@ -13,7 +13,7 @@
 
 package types
 
-import "dbapp/tidbparser/dependency/types/json"
+import "virtdb/tidbparser/dependency/types/json"
 
 // Row is an interface to read columns values.
 type Row interface {

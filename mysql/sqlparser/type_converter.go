@@ -3,7 +3,7 @@ package sqlparser
 import (
 	"bytes"
 
-	"dbapp/tidbparser/ast"
+	"virtdb/tidbparser/ast"
 )
 
 func convertFromCreateTableStmt(stmt *ast.CreateTableStmt, ddl *DDL) Statement {

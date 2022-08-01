@@ -18,10 +18,10 @@ import (
 	"math"
 	"unsafe"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/types/json"
-	"dbapp/tidbparser/dependency/util/hack"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/types/json"
+	"virtdb/tidbparser/dependency/util/hack"
 )
 
 // MutRow represents a mutable Row.

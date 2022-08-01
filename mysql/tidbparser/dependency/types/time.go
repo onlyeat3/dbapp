@@ -23,9 +23,10 @@ import (
 	gotime "time"
 	"unicode"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/sessionctx/stmtctx"
-	"dbapp/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/sessionctx/stmtctx"
+	"virtdb/tidbparser/dependency/terror"
+
 	"github.com/juju/errors"
 )
 

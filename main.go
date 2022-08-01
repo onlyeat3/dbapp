@@ -1,12 +1,13 @@
 package main
 
 import (
-	"dbapp/dbapp"
-	_ "github.com/go-sql-driver/mysql"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"virtdb/virtdb"
+
+	_ "github.com/go-sql-driver/mysql"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -31,11 +32,11 @@ func main() {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
-	config := &dbapp.DBAppConfig{
+	config := &virtdb.VirtdbConfig{
 		ServerPort:            DefaultServerPort,
 		ServerDBName:          "test",
-		ServerUser:            "dbapp",
-		ServerPassword:        "dbapp",
+		ServerUser:            "root",
+		ServerPassword:        "root",
 		MySQLConnPoolMinALive: 10,
 		MySQLConnPoolMaxAlive: 10000,
 		MySQLConnPoolMaxIdle:  10,
@@ -46,5 +47,5 @@ func main() {
 		RedisPoolSize:         1000,
 		RedisPassword:         "",
 	}
-	dbapp.Start(config)
+	virtdb.Start(config)
 }

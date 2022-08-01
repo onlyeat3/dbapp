@@ -17,8 +17,9 @@ import (
 	"math"
 	"strconv"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
+
 	"github.com/juju/errors"
 )
 

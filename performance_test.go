@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"dbapp/dbapp"
-	"dbapp/performance"
 	"fmt"
+	"testing"
+	"time"
+	"virtdb/performance"
+	"virtdb/virtdb"
+
 	"github.com/go-mysql-org/go-mysql/client"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
-	"testing"
-	"time"
 )
 
 const (
@@ -31,8 +32,8 @@ func TestCompareDuration(t *testing.T) {
 
 func testProxy(count int, sql string) {
 	mysqlAddress := fmt.Sprintf("127.0.0.1:%v", DefaultServerPort)
-	password := "dbapp"
-	user := "dbapp"
+	password := "virtdb"
+	user := "virtdb"
 	dbName := "test"
 	connPool := client.NewPool(log.Debugf, minALive, maxAlive, maxIdle, mysqlAddress, user, password, dbName)
 
@@ -60,7 +61,7 @@ const (
 )
 
 func testDirectRedis(count int, sql string) {
-	redisClient := dbapp.NewGenericRedisClientWithConfig(RedisAddress, RedisPoolSize, RedisPassword)
+	redisClient := virtdb.NewGenericRedisClientWithConfig(RedisAddress, RedisPoolSize, RedisPassword)
 	monitor := performance.StartNewMonitorWithTimeUnit("direct Redis", time.Millisecond)
 	ctx := context.Background()
 	g, _ := errgroup.WithContext(ctx)

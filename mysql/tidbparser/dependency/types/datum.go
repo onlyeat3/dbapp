@@ -22,11 +22,12 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/sessionctx/stmtctx"
-	"dbapp/tidbparser/dependency/types/json"
-	"dbapp/tidbparser/dependency/util/charset"
-	"dbapp/tidbparser/dependency/util/hack"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/sessionctx/stmtctx"
+	"virtdb/tidbparser/dependency/types/json"
+	"virtdb/tidbparser/dependency/util/charset"
+	"virtdb/tidbparser/dependency/util/hack"
+
 	"github.com/juju/errors"
 )
 

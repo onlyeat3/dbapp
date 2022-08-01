@@ -18,8 +18,8 @@ import (
 	"sync"
 	"time"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/util/memory"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/util/memory"
 )
 
 // StatementContext contains variables for a statement.

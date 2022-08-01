@@ -14,8 +14,8 @@
 package types
 
 import (
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
 )
 
 var (

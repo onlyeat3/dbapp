@@ -19,10 +19,10 @@ import (
 	"strconv"
 	"strings"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/types/json"
-	"dbapp/tidbparser/dependency/util/charset"
-	"dbapp/tidbparser/dependency/util/format"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/types/json"
+	"virtdb/tidbparser/dependency/util/charset"
+	"virtdb/tidbparser/dependency/util/format"
 )
 
 // UnspecifiedLength is unspecified length.

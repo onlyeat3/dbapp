@@ -16,7 +16,8 @@ package charset
 import (
 	"strings"
 
-	"dbapp/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/mysql"
+
 	"github.com/juju/errors"
 )
 

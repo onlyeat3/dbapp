@@ -1,9 +1,10 @@
-package dbapp
+package virtdb
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 type GenericRedisClient struct {
@@ -27,7 +28,7 @@ func (h GenericRedisClient) Set(ctx context.Context, query string, encoded []byt
 	}
 }
 
-func NewGenericRedisClient(config *DBAppConfig) *GenericRedisClient {
+func NewGenericRedisClient(config *VirtdbConfig) *GenericRedisClient {
 	if len(config.RedisAddresses) > 0 {
 		options := &redis.ClusterOptions{
 			Addrs:    config.RedisAddresses,
@@ -50,7 +51,7 @@ func NewGenericRedisClient(config *DBAppConfig) *GenericRedisClient {
 }
 
 func NewGenericRedisClientWithConfig(address string, poolSize int, password string) *GenericRedisClient {
-	config := &DBAppConfig{
+	config := &VirtdbConfig{
 		RedisAddress:  address,
 		RedisPoolSize: poolSize,
 		RedisPassword: password,

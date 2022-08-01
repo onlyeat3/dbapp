@@ -22,7 +22,8 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
-	"dbapp/tidbparser/dependency/util/hack"
+	"virtdb/tidbparser/dependency/util/hack"
+
 	"github.com/juju/errors"
 )
 

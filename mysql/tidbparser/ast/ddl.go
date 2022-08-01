@@ -14,8 +14,8 @@
 package ast
 
 import (
-	"dbapp/tidbparser/dependency/model"
-	"dbapp/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/model"
+	"virtdb/tidbparser/dependency/types"
 )
 
 var (

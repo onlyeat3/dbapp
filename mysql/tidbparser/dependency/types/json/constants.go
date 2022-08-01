@@ -17,8 +17,8 @@ import (
 	"encoding/binary"
 	"unicode/utf8"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
 )
 
 // TypeCode indicates JSON type.

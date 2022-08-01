@@ -20,10 +20,10 @@ import (
 	"strconv"
 	"strings"
 
-	"dbapp/tidbparser/dependency/model"
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/parser/opcode"
+	"virtdb/tidbparser/dependency/model"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/parser/opcode"
 )
 
 var (

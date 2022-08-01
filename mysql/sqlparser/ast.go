@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"strings"
 
-	tidbparser "dbapp/tidbparser/parser"
 	"sqltypes"
+	tidbparser "virtdb/tidbparser/parser"
 )
 
 // Instructions for creating new types: If a type

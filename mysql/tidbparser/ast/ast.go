@@ -19,9 +19,9 @@ import (
 	"io"
 
 	"context"
-	"dbapp/tidbparser/dependency/model"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/util/chunk"
+	"virtdb/tidbparser/dependency/model"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/util/chunk"
 )
 
 // Node is the basic element of the AST.

@@ -14,8 +14,9 @@
 package chunk
 
 import (
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/util/memory"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/util/memory"
+
 	"github.com/juju/errors"
 )
 

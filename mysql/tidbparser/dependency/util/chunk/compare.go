@@ -16,10 +16,10 @@ package chunk
 import (
 	"sort"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/types/json"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/types/json"
 )
 
 // CompareFunc is a function to compare the two values in Row, the two columns must have the same type.

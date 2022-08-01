@@ -1,3 +1,4 @@
 .idea/
+.vscode/
 y.output
 bin/*.exe

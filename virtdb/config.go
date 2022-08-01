@@ -1,6 +1,6 @@
-package dbapp
+package virtdb
 
-type DBAppConfig struct {
+type VirtdbConfig struct {
 	//应用端口
 	ServerPort            int
 	ServerUser            string

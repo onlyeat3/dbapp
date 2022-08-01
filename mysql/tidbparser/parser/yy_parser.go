@@ -19,11 +19,12 @@ import (
 	"strconv"
 	"unicode"
 
-	"dbapp/tidbparser/ast"
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/terror"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/util/hack"
+	"virtdb/tidbparser/ast"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/util/hack"
+
 	"github.com/juju/errors"
 )
 

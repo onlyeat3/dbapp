@@ -17,12 +17,13 @@ import (
 	"encoding/binary"
 	"time"
 
-	"dbapp/tidbparser/dependency/mysql"
-	"dbapp/tidbparser/dependency/sessionctx/stmtctx"
-	"dbapp/tidbparser/dependency/terror"
-	"dbapp/tidbparser/dependency/types"
-	"dbapp/tidbparser/dependency/types/json"
-	"dbapp/tidbparser/dependency/util/chunk"
+	"virtdb/tidbparser/dependency/mysql"
+	"virtdb/tidbparser/dependency/sessionctx/stmtctx"
+	"virtdb/tidbparser/dependency/terror"
+	"virtdb/tidbparser/dependency/types"
+	"virtdb/tidbparser/dependency/types/json"
+	"virtdb/tidbparser/dependency/util/chunk"
+
 	"github.com/juju/errors"
 )
 
